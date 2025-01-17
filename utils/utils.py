@@ -91,3 +91,14 @@ def get_movie_titles(movie_data):
         movie_titles.append(title)
 
     return movie_titles
+
+
+def get_rotten_tomoatoes_score(data, key='Ratings'):
+    ratings = data.get(key, None)
+    if ratings is None:
+        return None
+    for dict_ in ratings:
+        rotten_tomoatoes_score = dict_.get('Source', None)
+        if rotten_tomoatoes_score == 'Rotten Tomatoes':
+            value = dict_.get('Value', None)
+            return value

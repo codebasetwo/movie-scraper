@@ -7,7 +7,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from utils.utils import get_movie_titles
-from utils.data_utils import load_pickle
+from utils.data_utils import load_pickle, save_pickle
 
 load_dotenv()
 omdb_key = os.getenv('OMDB')
@@ -23,7 +23,7 @@ async def get_omdb_info(title: str, url: str='https://www.omdbapi.com' ):
           return await response.json()
 
 
-async def omdb_main(movie_data):
+async def omdb_file(movie_data, path: Path='./movie_datasets/omdb_movies.pickle'):    
     # List of movie titles to fetch information for
     movie_titles = get_movie_titles(movie_data)
 
@@ -32,9 +32,12 @@ async def omdb_main(movie_data):
     movie_infos = await asyncio.gather(*tasks)
 
     # Return the fetched information
-    return movie_infos
+    save_pickle(path, movie_infos)
+
+async def omdb_main(movie_data):
+    await omdb_file(movie_data)
 
 if __name__ == "__main__":
     movie_data = load_pickle(Path('./movie_datasets/disney_movies.pickle'))
-    asyncio.run(omdb_main(movie_data))   
+    asyncio.run(omdb_file(movie_data))
 
