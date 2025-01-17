@@ -1,5 +1,7 @@
 import pytest
-from utils.conversion import money_conversion
+import datetime
+from utils.conversion import money_conversion, parse_date_string, clean_date
+
 
 def test_standard():
 	assert money_conversion("$3 million") == 3000000
@@ -45,3 +47,24 @@ def test_list():
 
 def test_unkown():
 	assert money_conversion("70 crore") is None
+
+def test_date_dmy():
+	assert parse_date_string("24 July 2024") == datetime.datetime.strptime("24 July 2024", '%d %B %Y')
+
+def test_date_mdy():
+	assert parse_date_string("July 24, 2024") == datetime.datetime.strptime("July 24, 2024", '%B %d, %Y')
+
+def test_date_year():
+	assert parse_date_string("2024") == datetime.datetime.strptime("2024", '%Y')
+
+def test_date_zero_index():
+	assert clean_date(['November 13, 1940']) == 'November 13, 1940'
+
+def test_dates():
+	assert clean_date(["August 24, 1942 (Rio de Janeiro)",
+							"February 6, 1943 (Boston)",
+							"February 19, 1943 (United States)"
+					]) == "February 6, 1943"
+	
+def test_date_string_year():
+	assert clean_date(["1948"]) == "1948"

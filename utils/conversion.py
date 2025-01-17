@@ -1,6 +1,8 @@
 import re
 from datetime import datetime
 
+
+DATE_REGEX = r'\w+\s\d{1,2},\s\d{4}|\d{1,2}\s\w+\s\d{4}|\d{4}'
 AMOUNTS = r"thousand|million|billion"
 NUMBER = r"\d+(,\d{3})*\.*\d*"
 STANDARD = fr"\${NUMBER}(-|\sto\s)?({NUMBER})?\s({AMOUNTS})"
@@ -10,8 +12,6 @@ def word_to_value(word):
 	return value_dict.get(word.lower(), 1)
 
 def parse_word(string):
-	# stripped_string = string.replace(",", "")
-	# value = float(re.search(NUMBER, string).group())
 	word = re.search(NUMBER, string).group()
 	value = float(word.replace(",", ""))
 	modifier = word_to_value(re.search(AMOUNTS, string, flags=re.I).group())
@@ -49,5 +49,12 @@ def parse_date_string(date_string):
 			continue
 
 
+def clean_date(value):
+    if isinstance(value, list) and len(value) > 1:
+        # Get release date for US
+        value = value[1]
+    else:
+        value = value[0]
 
-
+    string = re.search(DATE_REGEX, value).group()
+    return string

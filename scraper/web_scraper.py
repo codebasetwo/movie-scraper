@@ -2,6 +2,7 @@ import os
 import sys
 import asyncio
 from pathlib import Path
+from tqdm.asyncio import tqdm_asyncio
 
 import httpx
 from bs4 import BeautifulSoup as bs
@@ -35,7 +36,7 @@ async def get_many_movie_content(urls):
     semaphore = asyncio.Semaphore(32)
     async with httpx.AsyncClient() as client:
         to_do = [get_movie_content(url, client, semaphore) for url in urls]
-        results = await asyncio.gather(*to_do)
+        results = await tqdm_asyncio.gather(*to_do)
 
     return results
 
