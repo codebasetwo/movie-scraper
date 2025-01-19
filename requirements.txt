@@ -1,0 +1,9 @@
+jupyterlab
+tqdm
+aiohttp
+pandas
+python-dotenv
+httpx
+requests
+pytest
+beautifulsoup4
